@@ -12,7 +12,7 @@ Supported tools:
 
 On your _dokku_ server:
 ```sh
-git clone https://github.com/ignlg/dokku-builders-plugin.git /var/lib/dokku/plugins/dokku-builders
+git clone https://github.com/ignlg/dokku-builders-plugin.git /var/lib/dokku/plugins/builders
 ```
 
 ## Config file
