@@ -1,0 +1,30 @@
+# Example config file
+#
+# Usage:
+#   Put this file in your app's root folder.
+#
+# Source:
+#   https://github.com/ignlg/dokku-builders-plugin/blob/master/.dokkubuild
+#
+# Author:
+#   https://github.com/ignlg
+#
+# Notes:
+#   Sourced on build time. Handle with care.
+
+# Force update of npm packages
+BUILD_NPM_UPDATE=0
+
+# Run bower
+BUILD_BOWER=1
+BUILD_BOWER_PRUNE=1
+BUILD_BOWER_INSTALL=1
+BUILD_BOWER_UPDATE=0
+BUILD_BOWER_CACHE=1
+BUILD_BOWER_COMPONENTS="bower_components"
+
+# Run grunt build
+BUILD_GRUNT=1
+
+# Run gulp build
+BUILD_GULP=1

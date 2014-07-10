@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+APP="$1"
+IMAGE="dokku/$APP"
+PLUGIN_DIR=$(dirname $0)
+
+echo "-----> Injecting Builders script"
+id=$(cat "$PLUGIN_DIR/build" | docker run -i -a stdin $IMAGE /bin/bash -c "cat > /app/.builders" )
+test $(docker wait $id) -eq 0
+docker commit $id $IMAGE > /dev/null
+id=$(docker run -d $IMAGE /bin/bash -c "chmod +x /app/.builders" )
+test $(docker wait $id) -eq 0
+docker commit $id $IMAGE > /dev/null

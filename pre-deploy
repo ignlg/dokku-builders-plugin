@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+APP="$1"
+IMAGE="dokku/$APP"
+DOCKER_ARGS="-v $DOKKU_ROOT/$APP/builders-cache:/builders-cache"
+
+id=$(docker run $DOCKER_ARGS -d $IMAGE /bin/bash -c "/app/.builders")
+docker attach $id
+test $(docker wait $id) -eq 0
+docker commit $id $IMAGE > /dev/null
+
+echo "-----> Builders complete"

@@ -1,0 +1,116 @@
+#!/bin/bash
+
+echo "-----> Builders running..."
+
+if [[ -d "/app" ]]; then
+	cd "/app"
+else
+	echo '       Error: No app found'
+	exit 1
+fi
+
+# default build variables
+BUILD_NPM_UPDATE=0
+
+BUILD_BOWER=1
+BUILD_BOWER_PRUNE=1
+BUILD_BOWER_INSTALL=1
+BUILD_BOWER_UPDATE=0
+BUILD_BOWER_CACHE=1
+BUILD_BOWER_COMPONENTS="bower_components"
+
+BUILD_GRUNT=1
+BUILD_GULP=1
+
+# read config
+if [[ -f "./.dokkubuild" ]]; then
+	echo '-----> Reading config file'
+	source ./.dokkubuild
+fi
+
+# internal variables
+BUILDERS_CACHE="/builders-cache"
+
+PATH="$PATH:/app/vendor/node/bin"
+if [[ "x$(which npm)" == "x" ]]; then
+	new_path="$(find / -name npm | tail -1 | xargs -I % sh -c "dirname %")" &&
+	PATH="$PATH:$new_path"
+fi
+PATH="$PATH:$(npm bin)"
+
+# env rules
+if [[ -f "./.profile.d/app-env.sh" ]]; then
+	. ./.profile.d/app-env.sh
+else
+	echo '       No app-env.sh found'
+fi
+
+# npm
+if [[ $BUILD_NPM_UPDATE -eq 1 ]]; then
+	echo '-----> Updating npm packages'
+	npm update
+fi
+
+# bower
+if [[ $BUILD_BOWER -eq 1 ]]; then
+	echo '-----> Fetching bower components'
+	if [[ -f "./bower.json" ]]; then
+		if [[ ! -f "./node_modules/bower/bin/bower" ]]; then
+			npm install bower
+		fi
+		if [[ $BUILD_BOWER_CACHE -eq 1 && -f $BUILDERS_CACHE/bower_components.tar.gz ]]; then
+			echo "-----> Restoring $BUILD_BOWER_COMPONENTS from cache"
+	    mv $BUILDERS_CACHE/bower_components.tar.gz .
+	    gunzip bower_components.tar.gz
+	    tar xf bower_components.tar
+	    rm bower_components.tar
+	  fi
+
+  	if [[ $BUILD_BOWER_PRUNE -eq 1 ]]; then
+			echo '-----> Pruning cached components not specified in bower.json'
+			bower prune --allow-root --config.interactive=false
+		fi
+
+  	if [[ $BUILD_BOWER_INSTALL -eq 1 ]]; then
+			echo '-----> Installing bower components'
+  		bower install --allow-root --config.interactive=false
+  	fi
+
+		if [[ $BUILD_BOWER_UPDATE -eq 1 ]]; then
+			echo '-----> Updating bower components'
+			bower update --allow-root --config.interactive=false
+		fi
+
+		echo "-----> Caching $BUILD_BOWER_COMPONENTS directory"
+  	tar czf bower_components.tar.gz "$BUILD_BOWER_COMPONENTS"
+  	mv bower_components.tar.gz $BUILDERS_CACHE/
+	else
+		echo '       bower.json missing. Nothing to install...'
+	fi
+fi
+
+# grunt
+if [[ $BUILD_GRUNT -eq 1 ]]; then
+	echo '-----> Running Grunt build task'
+	if [[ -f "./Gruntfile.js" || -f "./Gruntfile.coffee" || -f "./grunt.js" ]]; then
+		if [[ ! -f "./node_modules/grunt-cli/bin/grunt" ]]; then
+			npm install grunt-cli
+		fi
+		grunt build
+	else
+		echo '       Gruntfile.js/coffee is missing. No tasks to run...'
+	fi
+fi
+
+# gulp
+if [[ $BUILD_GULP -eq 1 ]]; then
+	echo '-----> Running Gulp build task'
+	if [[ -f "./Gulpfile.js" || -f "./Gulpfile.coffee" || -f "./gulp.js" ]]; then
+		if [[ ! -f "./node_modules/gulp/bin/gulp" ]]; then
+			npm install gulp
+		fi
+		gulp build
+	else
+		echo '       Gulpfile.js/coffee is missing. No tasks to run...'
+	fi
+fi
