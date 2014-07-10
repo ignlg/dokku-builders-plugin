@@ -35,9 +35,9 @@ BUILD_GULP=1
 ```
 
 ## Inspired by
-https://github.com/thrashr888/dokku-bower-grunt-build-plugin
-https://github.com/firstandthird/dokku-buildui
-https://github.com/AntJanus/dokku-bower-install
+* https://github.com/thrashr888/dokku-bower-grunt-build-plugin
+* https://github.com/firstandthird/dokku-buildui
+* https://github.com/AntJanus/dokku-bower-install
 
 ## License
 
