@@ -33,7 +33,7 @@ BUILDERS_CACHE="/builders-cache"
 
 PATH="$PATH:/app/vendor/node/bin"
 if [[ "x$(which npm)" == "x" ]]; then
-	new_path="$(find / -name npm | tail -1 | xargs -I % sh -c "dirname %")" &&
+	new_path="$(find / -name npm | grep -v /tmp | grep -v node_modules | tail -1 | xargs -I % sh -c "dirname %")" &&
 	PATH="$PATH:$new_path"
 fi
 PATH="$PATH:$(npm bin)"
