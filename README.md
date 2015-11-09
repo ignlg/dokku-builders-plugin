@@ -10,9 +10,14 @@ Supported tools:
 
 ## Installation
 
-On your _dokku_ server:
-```sh
-git clone https://github.com/ignlg/dokku-builders-plugin.git /var/lib/dokku/plugins/builders
+```shell
+# on 0.3.x
+cd /var/lib/dokku/plugins
+git clone https://github.com/ignlg/dokku-builders-plugin.git builders
+dokku plugins-install
+
+# on 0.4.x
+dokku plugin:install https://github.com/ignlg/dokku-builders-plugin.git builders
 ```
 
 ## Config file
@@ -30,6 +35,8 @@ BUILD_BOWER_INSTALL=1
 BUILD_BOWER_UPDATE=0
 BUILD_BOWER_CACHE=1
 BUILD_BOWER_COMPONENTS="bower_components"
+BUILD_COMPASS=0
+BUILD_COMPASS_CACHE=1
 BUILD_GRUNT=1
 BUILD_GULP=1
 ```

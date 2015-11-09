@@ -1,3 +1,7 @@
+0.2.1
+---
+* Support: Compass
+
 0.2.0
 ---
 * Compatible with Dokku 0.4.0+
