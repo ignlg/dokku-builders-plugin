@@ -7,9 +7,9 @@ IMAGE="dokku/$APP"
 PLUGIN_DIR=$(dirname $0)
 
 echo "-----> Injecting Builders script"
-id=$(cat "$PLUGIN_DIR/build" | docker run -i -a stdin $IMAGE /bin/bash -c "cat > /app/.builders" )
+id=$(cat "$PLUGIN_DIR/build" | docker run -i -a stdin $IMAGE /bin/bash -c "cat > /app/.builders_run" )
 test $(docker wait $id) -eq 0
 docker commit $id $IMAGE > /dev/null
-id=$(docker run -d $IMAGE /bin/bash -c "chmod +x /app/.builders" )
+id=$(docker run -d $IMAGE /bin/bash -c "chmod +x /app/.builders_run" )
 test $(docker wait $id) -eq 0
 docker commit $id $IMAGE > /dev/null

@@ -6,6 +6,10 @@ error() {
   exit 1
 }
 
+warning() {
+  echo " !     $*"
+}
+
 status() {
   echo "-----> $*"
 }
@@ -52,7 +56,11 @@ BUILD_GRUNT=1
 BUILD_GULP=1
 
 # read config
-if [[ -f "./.dokkubuild" ]]; then
+if [[ -f "./.builders" ]]; then
+  status 'Reading builders file'
+  source ./.builders
+elif [[ -f "./.dokkubuild" ]]; then
+  warning '.dokkubuild file is deprecated, use .builders instead'
   status 'Reading config file'
   source ./.dokkubuild
 fi

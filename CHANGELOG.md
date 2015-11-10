@@ -1,6 +1,7 @@
-0.2.1
+0.3.0
 ---
 * Support: Compass
+* Changed config file: .builders
 
 0.2.0
 ---

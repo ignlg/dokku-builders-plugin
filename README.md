@@ -7,41 +7,45 @@ Supported tools:
 * [bower][bower]
 * [grunt][grunt]
 * [gulp][gulp]
+* [compass][compass]
 
 ## Installation
 
 ```shell
-# on 0.3.x
+# on dokku 0.3.x
 cd /var/lib/dokku/plugins
 git clone https://github.com/ignlg/dokku-builders-plugin.git builders
 dokku plugins-install
 
-# on 0.4.x
+# on dokku 0.4.x
 dokku plugin:install https://github.com/ignlg/dokku-builders-plugin.git builders
 ```
 
 ## Config file
 
-You can change the behavior with a `.dokkubuild` config file in your project's root folder or assigning environment variables.
+You can change the behavior with a `.builders` config file in your project's root folder or assigning environment variables.
 
-`.dokkubuild` example at: https://github.com/ignlg/dokku-builders-plugin/blob/master/.dokkubuild
+`.builders` example at: https://github.com/ignlg/dokku-builders-plugin/blob/master/.builders
 
 ### Defaults
 ```sh
 BUILD_NPM_UPDATE=0
+
 BUILD_BOWER=1
 BUILD_BOWER_PRUNE=1
 BUILD_BOWER_INSTALL=1
 BUILD_BOWER_UPDATE=0
 BUILD_BOWER_CACHE=1
 BUILD_BOWER_COMPONENTS="bower_components"
+
 BUILD_COMPASS=0
 BUILD_COMPASS_CACHE=1
+
 BUILD_GRUNT=1
 BUILD_GULP=1
 ```
 
-## Inspired by
+## Initially inspired by
 * https://github.com/thrashr888/dokku-bower-grunt-build-plugin
 * https://github.com/firstandthird/dokku-buildui
 * https://github.com/AntJanus/dokku-bower-install
@@ -70,8 +74,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-[dokku]: https://github.com/progrium/dokku
+[dokku]: http://progrium.viewdocs.io/dokku/
 [npm]: https://www.npmjs.org/
 [bower]: http://bower.io/
 [grunt]: http://gruntjs.com/
 [gulp]: http://gulpjs.com/
+[compass]: http://compass-style.org/

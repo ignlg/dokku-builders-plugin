@@ -1,6 +1,6 @@
 [plugin]
-name = "builders-plugin"
-version = "0.1.0"
+name = "builders"
+version = "0.3.0"
 description = "To run tools and package managers on build/release"
 website_url = "https://github.com/ignlg/dokku-builders-plugin"
 [plugin.config]

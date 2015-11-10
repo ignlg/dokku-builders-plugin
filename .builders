@@ -4,7 +4,7 @@
 #   Put this file in your app's root folder.
 #
 # Source:
-#   https://github.com/ignlg/dokku-builders-plugin/blob/master/.dokkubuild
+#   https://github.com/ignlg/dokku-builders-plugin/blob/master/.builders
 #
 # Author:
 #   https://github.com/ignlg
