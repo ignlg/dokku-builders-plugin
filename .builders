@@ -1,14 +1,8 @@
-# Example config file
-#
+# Example dokku-builders config file
 # Usage:
 #   Put this file in your app's root folder.
-#
 # Source:
 #   https://github.com/ignlg/dokku-builders-plugin/blob/master/.builders
-#
-# Author:
-#   https://github.com/ignlg
-#
 # Notes:
 #   Sourced on build time. Handle with care.
 

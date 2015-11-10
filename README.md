@@ -45,11 +45,6 @@ BUILD_GRUNT=1
 BUILD_GULP=1
 ```
 
-## Initially inspired by
-* https://github.com/thrashr888/dokku-bower-grunt-build-plugin
-* https://github.com/firstandthird/dokku-buildui
-* https://github.com/AntJanus/dokku-bower-install
-
 ## License
 
 The MIT License (MIT)
@@ -73,6 +68,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+### Thanks to
+* https://github.com/thrashr888/dokku-bower-grunt-build-plugin
+* https://github.com/firstandthird/dokku-buildui
+* https://github.com/AntJanus/dokku-bower-install
 
 [dokku]: http://progrium.viewdocs.io/dokku/
 [npm]: https://www.npmjs.org/

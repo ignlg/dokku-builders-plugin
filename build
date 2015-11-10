@@ -35,7 +35,7 @@ status "Builders running..."
 if [[ -d "/app" ]]; then
   cd "/app"
 else
-  message 'Error: No app found'
+  error 'Error: No app found'
   exit 1
 fi
 
@@ -61,7 +61,7 @@ if [[ -f "./.builders" ]]; then
   source ./.builders
 elif [[ -f "./.dokkubuild" ]]; then
   warning '.dokkubuild file is deprecated, use .builders instead'
-  status 'Reading config file'
+  status 'Reading old builders file'
   source ./.dokkubuild
 fi
 
@@ -78,9 +78,8 @@ PATH="$PATH:$(npm bin)"
 
 # env rules
 if [[ -f "./.profile.d/app-env.sh" ]]; then
+  status 'Running app-env.sh'
   . ./.profile.d/app-env.sh
-else
-  message 'No app-env.sh found'
 fi
 
 # npm
@@ -91,8 +90,8 @@ fi
 
 # bower
 if [[ $BUILD_BOWER -eq 1 ]]; then
-  status 'Fetching bower components'
   if [[ -f "./bower.json" ]]; then
+    status 'Fetching bower components'
     if [[ ! -f "./node_modules/bower/bin/bower" ]]; then
       npm install bower
     fi
@@ -123,39 +122,43 @@ if [[ $BUILD_BOWER -eq 1 ]]; then
     tar czf bower_components.tar.gz "$BUILD_BOWER_COMPONENTS"
     mv bower_components.tar.gz $BUILDERS_CACHE/
   else
-    message 'bower.json missing. Nothing to install.'
+    status 'Bower setup skipped: No bower.json file found.'
   fi
 fi
 
 # compass via bundle
 if [[ $BUILD_COMPASS -eq 1 ]]; then
-  (
-    # Install compass
-    status "Installing Compass"
-    export GEM_HOME=$BUILDERS_DIR/.gem/ruby/1.9.1
-    PATH="$GEM_HOME/bin:$PATH"
-    if [[ $BUILD_COMPASS_CACHE -eq 1 && -d $BUILDERS_CACHE/ruby/.gem ]]; then
-      status "Restoring gems from cache"
-      cp -r $BUILDERS_CACHE/ruby/.gem $BUILDERS_DIR
-      HOME=$BUILDERS_DIR gem update bundler --user-install --no-rdoc --no-ri 2>&1 | indent
-    else
-      HOME=$BUILDERS_DIR gem install bundler --user-install --no-rdoc --no-ri 2>&1 | indent
+  if [[ -f "./Gemfile" ]]; then
+    (
+      # Install compass
+      status "Running Compass compile task"
+      export GEM_HOME=$BUILDERS_DIR/.gem/ruby/1.9.1
+      PATH="$GEM_HOME/bin:$PATH"
+      if [[ $BUILD_COMPASS_CACHE -eq 1 && -d $BUILDERS_CACHE/ruby/.gem ]]; then
+        status "Restoring gems from cache"
+        cp -r $BUILDERS_CACHE/ruby/.gem $BUILDERS_DIR
+        HOME=$BUILDERS_DIR gem update bundler --user-install --no-rdoc --no-ri 2>&1 | indent
+      else
+        HOME=$BUILDERS_DIR gem install bundler --user-install --no-rdoc --no-ri 2>&1 | indent
+      fi
+
+      # Run bundler
+      HOME=$BUILDERS_DIR bundle install 2>&1 | indent
+
+      # Run compass
+      HOME=$BUILDERS_DIR bundle exec compass compile
+    )
+    # cache ruby gems
+    rm -rf $BUILDERS_CACHE/ruby
+    mkdir -p $BUILDERS_CACHE/ruby
+
+    # If app has a gems directory, cache it.
+    if test -d $BUILDERS_DIR/.gem; then
+      status "Caching gems for future builds"
+      cp -r $BUILDERS_DIR/.gem $BUILDERS_CACHE/ruby
     fi
-
-    # Run bundler
-    HOME=$BUILDERS_DIR bundle install 2>&1 | indent
-
-    # Run compass
-    HOME=$BUILDERS_DIR bundle exec compass compile
-  )
-  # cache ruby gems
-  rm -rf $BUILDERS_CACHE/ruby
-  mkdir -p $BUILDERS_CACHE/ruby
-
-  # If app has a gems directory, cache it.
-  if test -d $BUILDERS_DIR/.gem; then
-    status "Caching gems for future builds"
-    cp -r $BUILDERS_DIR/.gem $BUILDERS_CACHE/ruby
+  else
+    message 'Compass setup skipped: No Gemfile file found.'
   fi
 fi
 
@@ -168,7 +171,7 @@ if [[ $BUILD_GRUNT -eq 1 ]]; then
     fi
     grunt build
   else
-    message 'Gruntfile.js/coffee is missing. No tasks to run.'
+    message 'Gruntfile build skipped: No Gruntfile.js/coffee file found.'
   fi
 fi
 
@@ -181,6 +184,6 @@ if [[ $BUILD_GULP -eq 1 ]]; then
     fi
     gulp build
   else
-    message 'gulpfile.js/coffee is missing. No tasks to run.'
+    message 'Gulp build skipped: No gulpfile.js/coffee file found.'
   fi
 fi
