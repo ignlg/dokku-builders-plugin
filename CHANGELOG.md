@@ -1,7 +1,10 @@
 0.3.0
 ---
-* Support: Compass
-* Changed config file: .builders
+* Fixed wrong hooks for Dokku 0.4.0+
+* Added support for Compass (via Bundler)
+* Fixed support for Gulp
+* Changed config file to .builders
+* Defaults to 0
 
 0.2.0
 ---

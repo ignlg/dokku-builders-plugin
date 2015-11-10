@@ -3,11 +3,11 @@
 Plugin for [dokku][dokku] to run tools and package managers on build/release.
 
 Supported tools:
-* [npm][npm] (update)
 * [bower][bower]
+* [compass][compass]
 * [grunt][grunt]
 * [gulp][gulp]
-* [compass][compass]
+* [npm][npm]
 
 ## Installation
 
@@ -21,29 +21,53 @@ dokku plugins-install
 dokku plugin:install https://github.com/ignlg/dokku-builders-plugin.git builders
 ```
 
-## Config file
+## Config file: `.builders`
 
 You can change the behavior with a `.builders` config file in your project's root folder or assigning environment variables.
 
-`.builders` example at: https://github.com/ignlg/dokku-builders-plugin/blob/master/.builders
+All the options are boolean with value `0` or `1`.
 
-### Defaults
-```sh
-BUILD_NPM_UPDATE=0
-
+#### Example
+```shell
 BUILD_BOWER=1
-BUILD_BOWER_PRUNE=1
-BUILD_BOWER_INSTALL=1
-BUILD_BOWER_UPDATE=0
-BUILD_BOWER_CACHE=1
-BUILD_BOWER_COMPONENTS="bower_components"
-
-BUILD_COMPASS=0
-BUILD_COMPASS_CACHE=1
-
-BUILD_GRUNT=1
+BUILD_COMPASS=1
 BUILD_GULP=1
 ```
+Full `.builders` example at: https://github.com/ignlg/dokku-builders-plugin/blob/master/.builders
+
+#### Basic
+- `BUILD_BOWER` Default: `0`.
+
+	> Enables Bower.
+
+- `BUILD_COMPASS` Default: `0`.
+
+	> Enables Compass via Bundler.
+
+- `BUILD_GRUNT` Default: `0`.
+
+	> Enables Grunt.
+
+- `BUILD_GULP` Default: `0`.
+
+	> Enables Gulp.
+
+#### Advanced
+- `BUILD_NPM_UPDATE` Default: `0`.
+
+	> Forces npm update.
+
+- `BUILD_BOWER_PRUNE` Default: `0`.
+
+	> Forces bower prune of unused cached packages.
+
+- `BUILD_BOWER_INSTALL` Default: `1`.
+
+	> Bower install.
+
+- `BUILD_BOWER_UPDATE` Default: `1`.
+
+	> Bower update.
 
 ## License
 

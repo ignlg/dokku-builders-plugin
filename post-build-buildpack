@@ -1,12 +1,12 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
+# set -x
 
-APP="$1"
-IMAGE="dokku/$APP"
+APP="$1"; IMAGE=$(get_app_image_name $APP)
 PLUGIN_DIR=$(dirname $0)
 
-echo "-----> Injecting Builders script"
+dokku_log_info1_quiet "Injecting Builders script"
 id=$(cat "$PLUGIN_DIR/build" | docker run -i -a stdin $IMAGE /bin/bash -c "cat > /app/.builders_run" )
 test $(docker wait $id) -eq 0
 docker commit $id $IMAGE > /dev/null
