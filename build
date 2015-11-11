@@ -53,19 +53,19 @@ BUILD_BOWER_PRUNE=0
 BUILD_BOWER_INSTALL=1
 BUILD_BOWER_UPDATE=1
 
+status "Builders running..."
+
+# read config
+if [[ -f "./.builders" ]]; then
+  message 'Reading builders file'
+  source ./.builders
+elif [[ -f "./.dokkubuild" ]]; then
+  warning '.dokkubuild file is deprecated, use .builders instead'
+  message 'Reading old builders file'
+  source ./.dokkubuild
+fi
+
 if [[ "$BUILD_BOWER$BUILD_COMPASS$BUILD_GULP$BUILD_GRUNT" -ne "0000" ]]; then
-
-  status "Builders running..."
-
-  # read config
-  if [[ -f "./.builders" ]]; then
-    message 'Reading builders file'
-    source ./.builders
-  elif [[ -f "./.dokkubuild" ]]; then
-    warning '.dokkubuild file is deprecated, use .builders instead'
-    message 'Reading old builders file'
-    source ./.dokkubuild
-  fi
 
   # internal variables
   APP_DIR="/app"
