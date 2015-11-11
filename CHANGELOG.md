@@ -1,3 +1,7 @@
+0.3.1
+---
+* Skip if no builder active
+
 0.3.0
 ---
 * Fixed wrong hooks for Dokku 0.4.0+
