@@ -1,3 +1,7 @@
+0.3.2
+---
+* Fixes: "You cannot attach to a stopped container, start it first" error
+
 0.3.1
 ---
 * Skip if no builder active

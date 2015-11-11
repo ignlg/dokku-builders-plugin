@@ -6,7 +6,6 @@ source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
 APP="$1"; IMAGE=$(get_app_image_name $APP)
 
 id=$(docker run -d $IMAGE /bin/bash -c "/app/.builders_run")
-docker attach $id
 test $(docker wait $id) -eq 0
 docker commit $id $IMAGE > /dev/null
 
