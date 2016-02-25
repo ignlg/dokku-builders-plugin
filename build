@@ -43,12 +43,16 @@ fi
 
 # default build variables
 # Basic
-BUILD_BOWER=0
-BUILD_COMPASS=0
-BUILD_GRUNT=0
-BUILD_GULP=0
+BUILD_BUNDLER=""
+BUILD_BOWER=""
+BUILD_COMPASS=""
+BUILD_GRUNT=""
+BUILD_GULP=""
+# TODO
+BUILD_BASH=""
+BUILD_NPM_RUN=""
 # Advanced
-BUILD_NPM_UPDATE=0
+BUILD_NPM_UPDATE=""
 BUILD_BOWER_PRUNE=0
 BUILD_BOWER_INSTALL=1
 BUILD_BOWER_UPDATE=1
@@ -65,7 +69,12 @@ elif [[ -f "./.dokkubuild" ]]; then
   source ./.dokkubuild
 fi
 
-if [[ "$BUILD_BOWER$BUILD_COMPASS$BUILD_GULP$BUILD_GRUNT" -ne "0000" ]]; then
+if [[ "$BUILD_BASH$BUILD_NPM_RUN$BUILD_BUNDLER$BUILD_BOWER$BUILD_COMPASS$BUILD_GULP$BUILD_GRUNT" -ne "" ]]; then
+
+  # Retro-compatible
+  if [[ $BUILD_COMPASS -eq "1" ]]; then
+    BUILD_BUNDLER=1
+  fi
 
   # internal variables
   APP_DIR="/app"
@@ -84,46 +93,19 @@ if [[ "$BUILD_BOWER$BUILD_COMPASS$BUILD_GULP$BUILD_GRUNT" -ne "0000" ]]; then
   fi
 
   # npm
-  if [[ $BUILD_NPM_UPDATE -eq 1 ]]; then
+  if [[ "$BUILD_NPM_UPDATE" -eq "1" ]]; then
     message 'Updating npm packages'
     npm update | indent
   fi
 
-  # bower
-  if [[ $BUILD_BOWER -eq 1 ]]; then
-    if [[ -f "./bower.json" ]]; then
-      message 'Fetching bower components'
-      if [[ ! -f "./node_modules/bower/bin/bower" ]]; then
-        npm install bower | indent
-      fi
-
-      if [[ $BUILD_BOWER_PRUNE -eq 1 ]]; then
-        message 'Pruning cached components not specified in bower.json'
-        bower prune --allow-root --config.interactive=false | indent
-      fi
-
-      if [[ $BUILD_BOWER_INSTALL -eq 1 ]]; then
-        message 'Installing bower components'
-        bower install --allow-root --config.interactive=false | indent
-      fi
-
-      if [[ $BUILD_BOWER_UPDATE -eq 1 ]]; then
-        message 'Updating bower components'
-        bower update --allow-root --config.interactive=false | indent
-      fi
-    else
-      message 'Bower setup skipped: No bower.json file found.'
-    fi
-  fi
-
-  # compass via bundle
-  if [[ $BUILD_COMPASS -eq 1 ]]; then
+  # bundler
+  if [[ "$BUILD_BUNDLER" -eq "1" ]]; then
     if [[ -f "./Gemfile" ]]; then
       export GEM_HOME=$APP_DIR/.gem/ruby/1.9.1
       export PATH="$GEM_HOME/bin:$PATH"
       (
         # Install compass
-        message "Running Compass compile task"
+        message "Installing Bundler and gems"
         if [[ -d $APP_DIR/.gem ]]; then
           HOME=$APP_DIR gem update bundler --user-install --no-rdoc --no-ri 2>&1 | indent
         else
@@ -132,7 +114,45 @@ if [[ "$BUILD_BOWER$BUILD_COMPASS$BUILD_GULP$BUILD_GRUNT" -ne "0000" ]]; then
 
         # Run bundler
         HOME=$APP_DIR bundle install 2>&1 | indent
+      )
+    else
+      message 'Bundler setup skipped: No Gemfile file found.'
+    fi
+  fi
 
+  # bower
+  if [[ "$BUILD_BOWER" -eq "1" ]]; then
+    if [[ -f "./bower.json" ]]; then
+      message 'Fetching bower components'
+      if [[ ! -f "./node_modules/bower/bin/bower" ]]; then
+        npm install bower | indent
+      fi
+
+      if [[ "$BUILD_BOWER_PRUNE" -eq "1" ]]; then
+        message 'Pruning cached components not specified in bower.json'
+        bower prune --allow-root --config.interactive=false | indent
+      fi
+
+      if [[ "$BUILD_BOWER_INSTALL" -eq "1" ]]; then
+        message 'Installing bower components'
+        bower install --allow-root --config.interactive=false | indent
+      fi
+
+      if [[ "$BUILD_BOWER_UPDATE" -eq "1" ]]; then
+        message 'Updating bower components'
+        bower update --allow-root --config.interactive=false | indent
+      fi
+    else
+      message 'Bower setup skipped: No bower.json file found.'
+    fi
+  fi
+
+  # compass
+  if [[ "$BUILD_COMPASS" -eq "1" ]]; then
+    if [[ -f "./Gemfile" ]]; then
+      export GEM_HOME=$APP_DIR/.gem/ruby/1.9.1
+      export PATH="$GEM_HOME/bin:$PATH"
+      (
         # Run compass
         HOME=$APP_DIR bundle exec compass compile | indent
       )
@@ -142,7 +162,7 @@ if [[ "$BUILD_BOWER$BUILD_COMPASS$BUILD_GULP$BUILD_GRUNT" -ne "0000" ]]; then
   fi
 
   # grunt
-  if [[ $BUILD_GRUNT -eq 1 ]]; then
+  if [[ "$BUILD_GRUNT" -eq "1" ]]; then
     if [[ -f "./Gruntfile.js" || -f "./Gruntfile.coffee" || -f "./grunt.js" ]]; then
       message 'Running Grunt build task'
       if [[ ! -f "./node_modules/grunt-cli/bin/grunt" ]]; then
@@ -155,7 +175,7 @@ if [[ "$BUILD_BOWER$BUILD_COMPASS$BUILD_GULP$BUILD_GRUNT" -ne "0000" ]]; then
   fi
 
   # gulp
-  if [[ $BUILD_GULP -eq 1 ]]; then
+  if [[ "$BUILD_GULP" -eq "1" ]]; then
     if [[ -f "./gulpfile.js" || -f "./gulpfile.coffee" ]]; then
       if [[ -f "./node_modules/gulp/bin/gulp.js" ]]; then
         message 'Running Gulp build task'
@@ -166,5 +186,10 @@ if [[ "$BUILD_BOWER$BUILD_COMPASS$BUILD_GULP$BUILD_GRUNT" -ne "0000" ]]; then
     else
       message 'Gulp build skipped: No gulpfile.js/coffee file found.'
     fi
+  fi
+
+  # bash
+  if [[ "x$BUILD_BASH" -ne "x" ]]; then
+    warning 'TODO: Running Bash task'
   fi
 fi

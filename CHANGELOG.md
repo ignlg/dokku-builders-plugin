@@ -1,3 +1,7 @@
+0.4.0
+---
+* Support for Bundler
+
 0.3.3
 ---
 * Fixes builders skipping

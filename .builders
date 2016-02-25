@@ -4,12 +4,12 @@
 # Source:
 #   https://github.com/ignlg/dokku-builders-plugin/blob/master/.builders
 # Notes:
-#   Sourced on build time. Handle with care.
+#   Sourced on deploy time. Handle with care.
 
-# Force update of npm packages
-BUILD_NPM_UPDATE=0
+# Install gems with bundler
+BUILD_BUNDLER=1
 
-# Run bower
+# Install bower components
 BUILD_BOWER=1
 BUILD_BOWER_PRUNE=1
 BUILD_BOWER_INSTALL=1
@@ -26,3 +26,12 @@ BUILD_GRUNT=1
 
 # Run gulp build
 BUILD_GULP=1
+
+# Run bash script
+BUILD_BASH="setup.bash"
+
+# Force update of npm packages
+BUILD_NPM_UPDATE=1
+
+# npm custom script
+BUILD_NPM_RUN="build" # -> npm build
